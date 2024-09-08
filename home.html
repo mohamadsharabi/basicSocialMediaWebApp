@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/nav.css">
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/loader.css">
+  <title>FINAL</title>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg fixed-top mb-2">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="./DALL·E 2024-09-03 03.12.40 - A modern, sleek logo for a social media app named 'VibeNet'. The logo features a stylized 'V' with a network or connection theme, using soft gradients.webp" alt=""></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Profile</a>
+          </li>
+        </ul>
+        <!-- Buttons -->
+        <button id="login-button" type="button" class="btn btn-primary">Login</button>
+        <button type="button" id="register-button" class="btn btn-primary ms-2">Register</button>
+      </div>
+    </div>
+  </nav>
+  <!-- NAVBAR END -->
+
+  <!-- POSTS CONTAINER -->
+  <div id="posts-container" class="container">
+  </div>
+  <!-- POSTS END -->
+
+  <!-- Loader -->
+  <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+    <div></div><div></div>
+  </div>
+
+  <!-- Axios & Bootstrap JS -->
+  <script src="./node_modules/axios/dist/axios.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+  <script>
+    let page = 1;
+    let lastPage = 0;
+
+    handleUI()
+
+   
+    getPosts()
+
+window.addEventListener('scroll', () => {
+  let pageEnd = window.innerHeight + window.pageYOffset >= document.body.scrollHeight;
+    if (pageEnd && page <= lastPage) {
+
+          getPosts(page);
+          page = page + 1;
+        
+    }
+});
+
+
+
+function getPosts(page) {
+  toggleLoader()
+  axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=5&page=${page}`)
+    .then((response) => {
+      toggleLoader(false)
+      lastPage = response.data.meta.last_page
+
+      let postsContainer = document.getElementById('posts-container');
+      let posts = response.data.data;
+
+      for (let post of posts) {
+          let postTitle = post.title || "";  // Default to empty string if title is null
+          let profileImage = Object.keys(post.author.profile_image).length !== 0
+              ? post.author.profile_image
+              : './avatar.jpg';
+          
+
+          let postElement = document.createElement('div');
+          postElement.className = "post-container";
+          
+          let postContent = `
+              <div class="card">
+                  <div class="d-flex align-items-center mb-2">
+                      <img class="profile-img" src="${profileImage}" alt="I">
+                      <b class="username">${post.author.username}</b>
+                  </div>
+                  ${Object.keys(post.image).length !== 0 ? `<img src="${post.image}" class="card-img-top" alt=" ">` : ""}
+                  <p class="card-text mb-0"><small class="text-body-secondary">${post.created_at}</small></p>
+                  <hr class="mb-0">
+                  <div class="card-body mt-0">
+                      <h5 class="card-title">${postTitle}</h5>
+                      <p class="card-text">${post.body}</p>
+                  </div>
+                  <div style="display:flex;align-items:center">
+                      <img src="./icons8-comment.gif" class="comment-icon" alt="Comment icon">
+                      <span class="comment-count">(${post.comments_count}) comments</span>
+                  </div>
+              </div>
+          `;
+
+          postElement.innerHTML = postContent;
+          postsContainer.appendChild(postElement);
+      }
+    });
+
+}
+
+
+
+    document.getElementById('register-button').addEventListener('click', () => {
+      // redirect to register page 
+      window.location.href = './register.html';
+    })
+
+    document.getElementById('login-button').addEventListener('click', () => {
+      window.location.href = './login.html'
+    })
+
+    axios.get(`https://tarmeezacademy.com/api/v1/posts`)
+    .then((response) => {
+        let postsContainer = document.getElementById('posts-container');
+        let posts = response.data.data;
+
+        for (let post of posts) {
+            let postTitle = post.title || "";  // Default to empty string if title is null
+            let profileImage = Object.keys(post.author.profile_image).length !== 0
+                ? post.author.profile_image
+                : './avatar.jpg';
+
+            let postElement = document.createElement('div');
+            postElement.className = "post-container";
+            
+            let postContent = `
+                <div class="card">
+                    <div class="d-flex align-items-center mb-2 ml-0">
+                        <img class="profile-img" src="${profileImage}" alt="Pimage">
+                        <b class="username">${post.author.username}</b>
+                    </div>
+                    ${Object.keys(post.image).length !== 0 ? `<img src="${post.image}" class="card-img-top" alt=" ">` : ""}
+                    <p class="card-text mb-0"><small class="text-body-secondary">${post.created_at}</small></p>
+                    <hr class="mb-0">
+                    <div class="card-body mt-0">
+                        <h5 class="card-title">${postTitle}</h5>
+                        <p class="card-text">${post.body}</p>
+                    </div>
+                    <div style="display:flex;align-items:center">
+                        <img src="./icons8-comment.gif" class="comment-icon" alt="Comment icon">
+                        <span class="comment-count">(${post.comments_count}) comments</span>
+                    </div>
+                </div>
+            `;
+
+            postElement.innerHTML = postContent;
+            postsContainer.appendChild(postElement);
+        }
+    });
+
+
+
+      // handle ui function 
+      function handleUI() {
+        // check if token present in local storage , if found redirect user to his account
+        let token = localStorage.getItem('token')
+        if (token != null) {
+          window.location.href = './done.html'
+        }
+
+      }
+
+
+// loader 
+function toggleLoader(show = true) {
+  let loader = document.getElementById('loader');
+  if (show) {
+    loader.style.display = 'block';
+  } else {
+    loader.style.display = 'none'
+  }
+}
+  </script>
+</body>
+</html>

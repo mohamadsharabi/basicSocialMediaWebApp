@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/nav.css">
+  <link rel="stylesheet" href="styles/loader.css">
+  <title>FINAL</title>
+</head>
+
+<body>
+  <style>
+    /* Body Styling */
+    /* Body Styling */
+body {
+  padding-top: 80px;
+  background-color: #f7fafc; /* Soft light grey background */
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #333; /* Standard dark grey for text */
+}
+
+
+
+/* Post Container Styling */
+.post-container {
+  border-radius: 12px;
+  background-color: #ffffff; /* Pure white background for contrast */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin-bottom: 20px;
+  width: 900px;
+  /* height: 700px; */
+  margin-top: 20px;
+  align-items: center;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+/* Card Image and Content */
+.card {
+  width: 100%;
+  border: none; /* Remove card border */
+  padding: 15px;
+  margin: auto;
+}
+
+.card-img-top {
+  object-fit: cover;
+  height:500px; /* Adjusted for a wider look */
+  border-radius: 8px;
+}
+
+/* Card Text and Headers */
+.card-title {
+  color: #333333; /* Darker blue-grey for titles */
+  font-weight: bold;
+}
+
+.card-text {
+  color: #7a7a7a; /* Medium grey-blue for text */
+}
+
+/* Profile Image and Username */
+.profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; /* Ensure profile image is circular */
+  margin-left:2px;
+  cursor: pointer;
+}
+
+.username {
+  color: #333333; /* Same darker blue-grey for username */
+  font-weight: 500;
+  margin-left: 15px;
+}
+
+/* Comment Icon and Count */
+.comment-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle; /* Align icon with text */
+}
+
+.comment-count {
+  color: #2d69e0; /* Calmer blue for comment count */
+  margin-left: 5px;
+}
+.add-post-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #2d69e0; /* Modern blue color */
+  color: white;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, box-shadow 0.3s;
+
+  /* Positioning the button at the bottom right */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.add-post-btn:hover {
+  background-color: #1a4d9b; /* Darker blue color on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+.profile-img-nav {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; /* Ensure profile image is circular */
+  margin-left:20px;
+  cursor: pointer;
+}
+
+
+
+
+.profile-container {
+      max-width: 900px;
+      margin: auto;
+      margin-top: 100px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .profile-imgg {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #007BFF;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-info h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .profile-info p {
+      margin: 0;
+      color: #666;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 20px;
+    }
+
+    .profile-stats div {
+      text-align: center;
+    }
+
+    .profile-stats div p {
+      margin: 5px 0;
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .profile-stats div span {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+  </style>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg fixed-top mb-3">
+      <div class="container-fluid">
+        <img src="./icons8-skull-96.png" alt="Bootstrap" width="34px" height="37px">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="./home.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./profile.html">Profile</a>
+            </li>
+          </ul>
+          <!-- Buttons -->
+          
+          <!-- profile pic -->
+          <div class="d-flex align-items-center" style="height: 30px;">
+            <button onclick="logout()" id="logout-button" type="button" class="btn btn-danger">Logout</button>
+            <img onclick='toProfile()' id="profile-picture" class="profile-img-nav" src="./avatar.jpg" alt="I">
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- NAVBAR END -->
+  
+    <!-- user data -->
+
+      <div class="profile-container">
+        <div class="profile-header">
+          <img src="./avatar.jpg" alt="User's Profile Picture" class="profile-imgg" id="avatar">
+          <div class="profile-info">
+            <h2 id="user-name">John Doe</h2>  <!-- Display Name -->
+            <p id="user-username">@johndoe</p> <!-- Display Username -->
+          </div>
+        </div>
+  
+        <div class="profile-stats">
+          <div>
+            <p id="post-count">23</p>  <!-- Display Post Count -->
+            <span>Posts</span>
+          </div>
+          <div>
+            <p id="comments-count">56</p>  <!-- Display Comments Count -->
+            <span>Comments</span>
+          </div>
+        </div>
+      </div>
+  
+    <!-- user data --> 
+    <div class="container text-center my-4">
+      <h2 class="section-title">Posts</h2> <!-- Add a title for the posts section -->
+    </div>
+
+    <!-- POSTS CONTAINER -->
+    <div id="posts-container" class="container">
+    </div>
+    <!-- POSTS END -->
+
+    <!-- Loader -->
+    <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+      <div></div><div></div>
+    </div>
+
+      <!-- Axios & Bootstrap JS -->
+  <script src="./node_modules/axios/dist/axios.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="./main.js"></script>
+
+
+  <script>
+    let user = JSON.parse(localStorage.getItem('user'))
+
+    handleUI();
+    getUser();
+    getPosts();
+
+    function getUser() {
+      let urlParams = new URLSearchParams(window.location.search)
+      let id = urlParams.get('userid') || user.id
+      axios.get(`https://tarmeezacademy.com/api/v1/users/${id}`)
+      .then((response) => {
+        let user = response.data.data;
+        document.getElementById('user-name').innerHTML = user.name;
+        document.getElementById('user-username').innerHTML = user.username;
+        document.getElementById('post-count').innerHTML = user.posts_count;
+        document.getElementById('comments-count').innerHTML = user.comments_count;
+        document.getElementById('avatar').src = user.profile_image
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+      })
+    }
+
+    function getPosts() {
+      let urlParams = new URLSearchParams(window.location.search)
+      let id = urlParams.get('userid') || user.id
+      toggleLoader()
+      axios.get(`https://tarmeezacademy.com/api/v1/users/${id}/posts`)
+        .then((response) => {
+          toggleLoader(false)
+          let postsContainer = document.getElementById('posts-container');
+          let posts = response.data.data;
+          for (let post of posts) {
+              let postTitle = post.title || "";  // Default to empty string if title is null
+              let profileImage = Object.keys(post.author.profile_image).length !== 0
+                  ? post.author.profile_image
+                  : './avatar.jpg';
+              let postElement = document.createElement('div');
+              postElement.className = "post-container";
+              let editPostBtn = '';
+              let deletePostBtn ='';
+              let user = JSON.parse(localStorage.getItem('user'));
+              if(post.author.id === user.id) {
+                editPostBtn = `<button onclick="editPost(${post.id}, '${post.title}', '${post.body}')" id="edit-post-btn" class="btn btn-sm btn-primary ms-auto">Edit</button>`;
+                deletePostBtn = `<button onclick="deletePost(${post.id})" id="delete-post-btn" class="btn btn-sm btn-danger ms-2">Delete</button>`;
+              }
+              let postContent = `
+                <div class="card" >
+                  <div class="d-flex align-items-center mb-2">
+                    <span onclick="usernameClicked()" style="cursor:pointer">
+                      <img class="profile-img" src="${profileImage}" alt="I">
+                      <b class="username">${post.author.username}</b>
+                    </span>
+                      ${editPostBtn}
+                    ${deletePostBtn}
+                  </div>
+                  <div onclick='handlePostClicking(${post.id})'>
+                    ${Object.keys(post.image).length !== 0 ? `<img src="${post.image}" class="card-img-top" alt=" ">` : ""}
+                    <p class="card-text mb-0"><small class="text-body-secondary">${post.created_at}</small></p>
+                    <hr class="mb-0">
+                    <div class="card-body mt-0">
+                      <h5 class="card-title">${postTitle}</h5>
+                      <p class="card-text">${post.body}</p>
+                    </div>
+                    <div style="display:flex;align-items:center">
+                      <img src="./icons8-comment.gif" class="comment-icon" alt="Comment icon">
+                      <span class="comment-count">(${post.comments_count}) comments</span>
+                    </div>
+                  </div>
+                </div>
+    `;
+              postElement.innerHTML = postContent;
+              postsContainer.appendChild(postElement);
+          }
+        });
+
+    }
+
+  </script>
+</body>
+</html>
+

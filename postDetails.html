@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/nav.css">
+  <link rel="stylesheet" href="styles/postDetails.css">
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg fixed-top mb-3" style="max-width: 1000px;">
+    <div class="container-fluid">
+      <img src="./icons8-skull-96.png" alt="Bootstrap" width="34px" height="37px">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="./done.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./profile.html">Profile</a>
+          </li>
+        </ul>
+        <!-- Buttons -->
+        
+        <!-- profile pic -->
+        <div class="d-flex align-items-center" style="height: 30px;">
+          <button onclick="logout()" id="logout-button" type="button" class="btn btn-danger">Logout</button>
+          <img onclick='toProfile()' id="profile-picture" class="profile-img-nav" src="./avatar.jpg" alt="I">
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  
+
+  <div id="bigContainer">
+
+    <div id="post-container" class="post-container">
+      <div class="post-header">
+        <div class="profile-pic">
+          <img src="avatar.jpg" alt="Profile Picture">
+        </div>
+        <div class="post-info">
+          <span class="username">username</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <img src="post-image.jpg" alt="Post Image" class="post-image">
+        <div class="post-content">
+          <h3 class="post-title">Post Title</h3>
+          <p class="post-text">Post body content goes here...</p>
+        </div>
+      </div>
+    </div>
+    
+
+
+    <div class="comments-section" id="comments-section">
+      <!-- First Comment -->
+      <div class="comment-box">
+        <div class="header">
+          <div class="profile">
+            <img src="profile_placeholder.png" alt="I" class="profile-pic">
+            <span class="username">username1</span>
+          </div>
+          <div class="created-at">3h</div>
+        </div>
+    
+        <div class="comment">
+          <p>
+            This is the first comment. The user has shared their thoughts here. The design is modern and clean, and the spacing helps readability.
+          </p>
+        </div>
+      </div>
+    
+      <!-- Second Comment -->
+      <div class="comment-box">
+        <div class="header">
+          <div class="profile">
+            <img src="profile_placeholder.png" alt="Profile Picture" class="profile-pic">
+            <span class="username">username2</span>
+          </div>
+          <div class="created-at">1h</div>
+        </div>
+    
+        <div class="comment">
+          <p>
+            This is the second comment with some more input. I love how everything is laid out neatly and the design feels very responsive.
+          </p>
+        </div>
+  
+  
+      </div>
+      <!-- New Comment Input -->
+      
+      </div>
+
+      <div class="new-comment">
+        <input id="comment" type="text" placeholder="Add a new comment">
+        <button id="add-comment-btn">Comment</button>
+      </div>
+
+  </div>
+  <!-- Loader -->
+  <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+    <div></div><div></div>
+  </div>
+  
+
+
+    <!-- Axios & Bootstrap JS -->
+    <script src="./node_modules/axios/dist/axios.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="./main.js"></script>
+    <script>
+      handleUI()
+      let token = localStorage.getItem('token')
+      let postID = localStorage.getItem('postId')
+      toggleLoader()
+      axios.get(`https://tarmeezacademy.com/api/v1/posts/${postID}`)
+      .then((response) => {
+        toggleLoader(false)
+        //response.data.data
+        let comments = response.data.data.comments
+        let post = response.data.data
+
+        let postTitle = post.title || "";  // Default to empty string if title is null
+        let profileImage = Object.keys(post.author.profile_image).length !== 0
+              ? post.author.profile_image
+              : './avatar.jpg';
+
+        let postContainer = document.getElementById('post-container');
+        postContainer.innerHTML = '';
+        let postContents = `
+          <div class="post-header">
+            <div class="profile-pic">
+              <img src=${profileImage} alt="Profile Picture">
+            </div>
+            <div class="post-info">
+              <span class="username">${post.author.username}</span>
+            </div>
+        </div>
+        <div class="post-body">
+          ${Object.keys(post.image).length !== 0 ? `<img src="${post.image}" class="post-image" alt=" ">` : ""}
+          <div class="post-content">
+            <h3 class="post-title">${postTitle}</h3>
+            <p class="post-text">${post.body}</p>
+          </div>
+        </div>
+
+        `
+        postContainer.innerHTML = postContents;
+
+
+
+        // comments////////////////////////////
+        let commentsSection = document.getElementById('comments-section');
+        commentsSection.innerHTML = '';
+        
+
+        for (let comment of comments) {
+          let commentBox = document.createElement('div')
+          commentBox.className = 'comment-box'
+          commentBox.innerHTML = `
+              <div class="header">
+                <div class="profile">
+                  <img src=${comment.author.profile_image} alt="Profile Picture" class="profile-pic">
+                  <span class="username">${comment.author.username}</span>
+                </div>
+              </div>
+          
+              <div class="comment">
+                <p>
+                  ${comment.body}
+                </p>
+              </div>
+          `
+          commentsSection.appendChild(commentBox);
+        }
+      })
+
+      
+
+      let addCommentBtn = document.getElementById('add-comment-btn');
+      addCommentBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        let comment = document.getElementById('comment')
+
+        if (comment.value.trim()) {
+          toggleLoader()
+          axios.post(`https://tarmeezacademy.com/api/v1/posts/${postID}/comments`, {
+          'body': `${comment.value}`
+        }, {
+          headers: {
+            "Accept": "application/json",
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then((response) => {
+          toggleLoader(false)
+          console.log('comment added ')
+          location.reload()
+          comment.value = "";
+        })
+        .catch ((error) => {
+          console.log(error.response)
+        })          
+        }
+      })
+
+
+    </script>
+</body>
+</html>

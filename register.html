@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/register.css">
+  <link rel="stylesheet" href="styles/loader.css">
+
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-header">Register</div>
+    <form id="register-form">
+      <span id="name-error" style="color: red; font-size: small;"></span>
+      <input type="text" class="form-control" id="name" placeholder="Name" required>
+      
+      <span id="email-error" style="color: red; font-size: small;"></span>
+      <input type="email" class="form-control" id="email" placeholder="Email" required>
+      
+      <span id="username-error" style="color: red; font-size: small;"></span>
+      <input type="text" class="form-control" id="username" placeholder="Username" required>
+      
+      <span id="password-error" style="color: red; font-size: small;"></span>
+      <input type="password" class="form-control" id="password" placeholder="Password" required>
+      
+      
+      <!-- Optional Image Input -->
+      <label for="image" class="form-label">Profile Image (Optional)</label>
+      <input type="file" class="form-control" id="image" accept="image/*">
+      
+      <p>already have an account ? <a href="./login.html">login here</a></p>
+
+      <button id="register-button" type="submit" class="btn btn-primary">Register</button>
+    </form>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+    <div></div><div></div>
+  </div>
+
+
+  <!-- Bootstrap & Axios JS -->
+<script src="./node_modules/axios/dist/axios.js"></script>
+<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script>
+
+  // registeration 
+  const registerForm = document.getElementById('register-form');
+
+  const registerButton = document.getElementById('register-button')
+
+    let username = document.getElementById('username')
+    let password = document.getElementById('password')
+    let name = document.getElementById('name')
+    let email = document.getElementById('email')
+
+
+
+    let nameError = document.getElementById('name-error')
+    let emailError = document.getElementById('email-error')
+    let usernameError = document.getElementById('username-error')
+    let passwordError = document.getElementById('password-error')
+
+
+
+    registerButton.addEventListener('click', (e) => {
+
+      e.preventDefault();
+      let formData = new FormData();
+      formData.append("username", `${username.value}`)
+      formData.append("password", `${password.value}`)
+      formData.append("name", `${name.value}`)
+      formData.append("email", `${email.value}`)
+
+      let profilePicture = document.getElementById('image').files[0];
+
+      if (profilePicture) {
+          formData.append('image', profilePicture);
+        }
+
+
+      toggleLoader()
+    axios.post('https://tarmeezacademy.com/api/v1/register', formData,
+        {
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'multipart/form-data'
+    }
+  }) 
+    .then((response) => {
+      toggleLoader(false)
+      console.log(response.data)
+
+      // remove error message from all spans after successful register 
+      const allSpans = document.querySelectorAll('span');
+      allSpans.forEach((span) => {
+      span.innerText = ''
+    })
+
+    // then redirect the user to login page 
+      window.location.href = './login.html'
+
+    })
+    .catch((error) => {
+      nameError.innerText = error.response.data.errors?.name?.[1] || '';
+      emailError.innerText = error.response.data.errors?.email?.[0] || '';
+      usernameError.innerText = error.response.data.errors?.username?.[0] || '';
+      passwordError.innerText = error.response.data.errors?.password?.[0] || '';
+    })
+
+
+  })
+  
+</script>
+
+
+</body>
+</html>
+
+

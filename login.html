@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/login.css">
+
+
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-header">Login</div>
+    <form id="login-form">
+
+      <span id="username-error" style="color: red; font-size: small;"></span>
+      <input type="text" class="form-control" id="username" placeholder="Username" required>
+      
+      <span id="password-error" style="color: red; font-size: small;"></span>
+      <input type="password" class="form-control" id="password" placeholder="Password" required>
+      
+      <p>don't have an account? <a href="./register.html">create one</a></p>
+      
+      <button id="login-button" type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+    <div></div><div></div>
+  </div>
+
+
+  <!-- Bootstrap & Axios JS -->
+<script src="./node_modules/axios/dist/axios.js"></script>
+<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script>
+
+  handleUI()
+
+  let username = document.getElementById('username');
+  let password = document.getElementById('password');
+
+  let loginButton = document.getElementById('login-button');
+
+  loginButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleLoader();
+    axios.post('https://tarmeezacademy.com/api/v1/login',{
+      "username": `${username.value}`,
+      "password": `${password.value}`,
+        },
+        {
+        headers: {
+          "Accept": "application/json"
+      }
+      })
+      .then((response) => {
+        toggleLoader(false);
+        console.log(response.data.token);
+
+        // after successful login save the token to local storage to use it then !
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+
+
+        // then redirect the user to his account or profile 
+        window.location.href = './done.html'
+      })
+      .catch((error) => {
+        toggleLoader(false);
+        // let myError = error.response?.data || '';
+        console.log(error.response?.data || '');
+        
+      })
+      
+  })
+
+
+  // handle ui function 
+  function handleUI() {
+        let token = localStorage.getItem('token')
+        if (token != null) {
+          window.location.href = './done.html'
+        }
+
+      }
+
+
+// loader 
+function toggleLoader(show = true) {
+  let loader = document.getElementById('loader');
+  if (show) {
+    loader.style.display = 'block';
+  } else {
+    loader.style.display = 'none'
+  }
+}
+</script>
+
+
+
+</body>
+</html>

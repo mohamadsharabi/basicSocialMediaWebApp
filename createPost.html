@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/createPost.css">
+    <link rel="stylesheet" href="styles/loader.css">
+    <title>Create Post</title>
+
+</head>
+<body>
+  <div id="alert-placeholder" style="position: fixed; left: 5px; bottom: 5px;"></div>
+  <div class="container">
+    <h2>Create a New Post</h2>
+    <form id="create-post-form">
+      <!-- Post Title -->
+      <div class="form-group">
+        <label for="post-title">Post Title</label>
+        <input type="text" id="post-title" placeholder="Enter post title" required>
+      </div>
+
+      <!-- Upload Picture (Optional) -->
+      <div class="form-group">
+        <label for="post-image">Upload Picture (Optional)</label>
+        <input type="file" id="post-image" accept="image/*">
+      </div>
+
+      <!-- Post Body -->
+      <div class="form-group">
+        <label for="post-body">Post Body</label>
+        <textarea id="post-body" placeholder="What's on your mind?" required></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Create Post</button>
+    </form>
+          <!-- Loader -->
+          <div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+            <div></div><div></div>
+          </div>
+  </div>
+
+  <!-- Axios & Bootstrap JS -->
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="./node_modules/axios/dist/axios.js"></script>
+  <script src="main.js"></script>
+
+  <script>
+    // Create a new Post
+    document.getElementById('submit-btn').addEventListener('click', (event) => {
+      event.preventDefault();
+  
+      let token = localStorage.getItem('token');
+  
+      let postTitle = document.getElementById('post-title').value;
+      let postBody = document.getElementById('post-body').value;
+      let postImage = document.getElementById('post-image').files[0];
+  
+      let formData = new FormData();
+      formData.append('title', postTitle);
+      formData.append('body', postBody);
+  
+      // Only append image if one is selected
+      if (postImage) {
+        formData.append('image', postImage);
+      }
+
+      // Show loader
+      // document.getElementById('loader').style.display = 'block';
+      toggleLoader()
+
+      axios.post('https://tarmeezacademy.com/api/v1/posts', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data' // Important for file uploads
+        }
+      })
+      .then((response) => {
+        toggleLoader(false)
+        let created = true;
+        window.location.href = `./done.html?created=${created}`;
+      })
+      .catch((error) => {
+        toggleLoader(false)
+        if (error.response) {
+          console.log(error.response.data);
+
+          if (error.response.data.errors.body) {
+            const alertPlaceholder = document.getElementById('alert-placeholder');
+            appendAlert(error.response.data.errors.body[0], 'danger');
+          }
+
+          if (error.response.data.errors.image) {
+            const alertPlaceholder = document.getElementById('alert-placeholder');
+            appendAlert(error.response.data.errors.image[0], 'danger');
+            appendAlert(error.response.data.errors.image[1], 'danger');
+          }
+        }
+      })
+      .finally(() => {
+        // Hide loader after request is done
+        // document.getElementById('loader').style.display = 'none';
+        toggleLoader(false)
+      });
+    });
+  </script>
+</body>
+
+
+
+</html>

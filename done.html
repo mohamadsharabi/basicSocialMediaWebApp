@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/nav.css">
+  <link rel="stylesheet" href="./styles/styles.css">
+  <link rel="stylesheet" href="styles/loader.css">
+  <title>FINAL</title>
+</head>
+
+<body>
+  <div id="alert-placeholder" style="position: fixed; left: 5px; bottom: 5px;"></div>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg fixed-top mb-3">
+    <div class="container-fluid">
+      <img src="./icons8-skull-96.png" alt="Bootstrap" width="34px" height="37px">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="./done.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./profile.html">Profile</a>
+          </li>
+        </ul>
+        <!-- Buttons -->
+        
+        <!-- profile pic -->
+        <div class="d-flex align-items-center" style="height: 30px;">
+          <button onclick="logout()" id="logout-button" type="button" class="btn btn-danger">Logout</button>
+          <img onclick='toProfile()' id="profile-picture" class="profile-img-nav" src="./avatar.jpg" alt="I">
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- NAVBAR END -->
+
+  <!-- POSTS CONTAINER -->
+  <div id="posts-container" class="container">
+  </div>
+  <!-- POSTS END -->
+
+
+  <button class="add-post-btn" id="add-post-btn">+</button>
+
+
+<!-- Loader -->
+<div id="loader" class="lds-ripple" style="display: none; margin-top: 20px; position: fixed; color: blue;">
+  <div></div><div></div>
+</div>
+
+
+  <!-- Axios & Bootstrap JS -->
+  <script src="./node_modules/axios/dist/axios.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="./main.js"></script>
+  
+  <script>
+
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let created = urlParams.get('created');
+    let edited = urlParams.get('edited')
+
+
+Alert();
+
+handleUI();
+
+
+getPosts();
+
+// infinite scroll
+let page = 1;
+let lastPage = 0;
+window.addEventListener('scroll', () => {
+  let pageEnd = window.innerHeight + window.pageYOffset >= document.body.scrollHeight;
+    if (pageEnd && page <= lastPage) {
+
+          getPosts(page);
+          page = page + 1;
+        
+    }
+});
+
+getPosts();
+
+
+function getPosts(page) {
+  toggleLoader();
+  axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=5&page=${page}`)
+    .then((response) => {
+      toggleLoader(false);
+      lastPage = response.data.meta.last_page
+
+      let postsContainer = document.getElementById('posts-container');
+      let posts = response.data.data;
+
+      for (let post of posts) {
+          let postTitle = post.title || "";  // Default to empty string if title is null
+          let profileImage = Object.keys(post.author.profile_image).length !== 0
+              ? post.author.profile_image
+              : './avatar.jpg';
+          
+
+          let postElement = document.createElement('div');
+          postElement.className = "post-container";
+
+          let editPostBtn = '';
+          let deletePostBtn ='';
+
+          let user = JSON.parse(localStorage.getItem('user'))
+          
+          //
+          if(post.author.id === user.id) {
+            editPostBtn = `<button onclick="editPost(${post.id}, '${post.title}', '${post.body}')" id="edit-post-btn" class="btn btn-sm btn-primary ms-auto">Edit</button>`;
+            deletePostBtn = `<button onclick="deletePost(${post.id})" id="delete-post-btn" class="btn btn-sm btn-danger ms-2">Delete</button>`;
+          }
+          
+          let postContent = `
+            <div class="card" >
+              <div class="d-flex align-items-center mb-2">
+                <span onclick="usernameClicked(${post.author.id})" style="cursor:pointer">
+                  <img class="profile-img" src="${profileImage}" alt="I">
+                  <b class="username">${post.author.username}</b>
+                </span>
+                  ${editPostBtn}
+                ${deletePostBtn}
+              </div>
+              
+              <div onclick='handlePostClicking(${post.id})'>
+                ${Object.keys(post.image).length !== 0 ? `<img src="${post.image}" class="card-img-top" alt=" ">` : ""}
+                <p class="card-text mb-0"><small class="text-body-secondary">${post.created_at}</small></p>
+                <hr class="mb-0">
+                <div class="card-body mt-0">
+                  <h5 class="card-title">${postTitle}</h5>
+                  <p class="card-text">${post.body}</p>
+                </div>
+                <div style="display:flex;align-items:center">
+                  <img src="./icons8-comment.gif" class="comment-icon" alt="Comment icon">
+                  <span class="comment-count">(${post.comments_count}) comments</span>
+                </div>
+              </div>
+            </div>
+`;
+
+
+          postElement.innerHTML = postContent;
+          postsContainer.appendChild(postElement);
+      }
+    });
+
+}
+    // creating a new post
+    let addPostButton = document.getElementById('add-post-btn')
+    addPostButton.addEventListener('click', () => {
+      window.location.href = './createPost.html'
+    })
+
+
+    function Alert() {
+      if (created == 'true') {
+        const alertPlaceholder = document.getElementById('alert-placeholder');
+        // Show success alert
+        appendAlert('Post created successfully!', 'success');;
+      }else if (edited == 'true') {
+        const alertPlaceholder = document.getElementById('alert-placeholder');
+        // Show success alert
+        appendAlert('Post edited successfully!', 'success');
+      }
+      const url = new URL(window.location);
+      url.searchParams.delete('created');
+      url.searchParams.delete('edited');
+      window.history.replaceState({}, document.title, url);
+}
+
+  </script>
+
+</body>
+</html>

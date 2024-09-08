@@ -1,0 +1,115 @@
+    /* Body Styling */
+    body {
+      padding-top: 100px;
+      background-color: #f7fafc; /* Soft light grey background */
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #333; /* Standard dark grey for text */
+    
+    }
+    
+    /* Post Container Styling */
+    .post-container {
+      border-radius: 12px;
+      background-color: #ffffff; /* Pure white background for contrast */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      margin-bottom: 20px;
+      width: 900px;
+      /* height: 700px; */
+      margin-top: 20px;
+      align-items: center;
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    
+    /* Card Image and Content */
+    .card {
+      width: 100%;
+      border: none; /* Remove card border */
+      padding: 15px;
+      margin: auto;
+    }
+    
+    .card-img-top {
+      object-fit: cover;
+      height:500px; /* Adjusted for a wider look */
+      border-radius: 8px;
+    }
+    
+    /* Card Text and Headers */
+    .card-title {
+      color: #333333; /* Darker blue-grey for titles */
+      font-weight: bold;
+    }
+    
+    .card-text {
+      color: #7a7a7a; /* Medium grey-blue for text */
+    }
+    
+    /* Profile Image and Username */
+    .profile-img {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      margin-left:2px;
+      border: 2px solid #007BFF;
+      cursor: pointer;
+    }
+    
+    .username {
+      color: #333333; /* Same darker blue-grey for username */
+      font-weight: 500;
+      margin-left: 15px;
+    }
+    
+    /* Comment Icon and Count */
+    .comment-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle; /* Align icon with text */
+    }
+    
+    .comment-count {
+      color: #2d69e0; /* Calmer blue for comment count */
+      margin-left: 5px;
+    }
+    .add-post-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #007BFF; /* Match navbar color */
+      color: white;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Match navbar shadow */
+      transition: background-color 0.3s, box-shadow 0.3s;
+    
+      /* Positioning the button at the bottom right */
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+    
+    .add-post-btn:hover {
+      background-color: #0056b3; /* Darker blue color on hover */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Match navbar shadow on hover */
+    }
+    
+    .profile-img-nav {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%; /* Ensure profile image is circular */
+      margin-left:20px;
+      cursor: pointer;
+    }
+    .profile-picture {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%; /* Ensure profile image is circular */
+      margin-left:2px;
+      cursor: pointer;
+    }
